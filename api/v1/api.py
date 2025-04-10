@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from api.v1.endpoints import transformers
+from api.v1.endpoints import office_characters  
 
 api_router = APIRouter()
-api_router.include_router(transformers.router, prefix = "/transformer", tags = ["Characters"])
+api_router.include_router(office_characters.router, prefix="/office-character", tags=["Characters"])

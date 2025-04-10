@@ -3,7 +3,7 @@ from core.configs import settings
 from api.v1.api import api_router
 from fastapi.middleware.cors import CORSMiddleware
 
-app = FastAPI(title = "API Transformers + MySQL")
+app = FastAPI(title = "API the office")
 
 origins = ["http://localhost", "http://localhost:8080", "http://127.0.0.1:5500"]
 
