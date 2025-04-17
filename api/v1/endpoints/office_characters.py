@@ -42,7 +42,7 @@ async def get_office_character(id: int, db: AsyncSession = Depends(get_session))
         if character:
             return character
         else:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Character not found!")
+            return HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Character not found!")
 
 
 @router.put("/{id}", response_model=all_schemas.OfficeCharacterSchema, status_code=status.HTTP_202_ACCEPTED)
@@ -61,7 +61,7 @@ async def put_office_character(id: int, character: all_schemas.OfficeCharacterSc
             await session.commit()
             return character_up
         else:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Character not found!")
+            return HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Character not found!")
 
 
 @router.delete("/{id}")
@@ -75,4 +75,4 @@ async def delete_office_character(id: int, db: AsyncSession = Depends(get_sessio
             await session.commit()
             return Response(status.HTTP_204_NO_CONTENT)
         else:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Character not found!")
+            return HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Character not found!")

@@ -1,14 +1,54 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>api the office</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Office API</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    // Configuração opcional de fontes e cores personalizadas
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            dunder: '#1F2937',
+            paper: '#F5F5F5',
+          },
+          fontFamily: {
+            office: ['"Courier New"', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
 </head>
-<body>
-    <h1>api da mi!</h1>
-    <div id="the-office"></div>
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <script src="js.js"></script>
+<body class="bg-paper font-sans text-gray-800">
+
+  <!-- HEADER -->
+  <header class="bg-white shadow-md p-4 flex items-center justify-between">
+    <div class="flex items-center gap-4">
+      <img src="assets/img/logo.png" alt="Logo The Office" class="h-12 w-auto">
+      <h1 class="text-2xl font-bold text-dunder font-office">Dunder Mifflin API</h1>
+    </div>
+    <nav class="space-x-6 text-lg">
+      <a href="index.html" class="text-gray-700 hover:text-yellow-600 transition">Início</a>
+      <a href="personagens.html" class="text-gray-700 hover:text-yellow-600 transition">Personagens</a>
+    </nav>
+  </header>
+
+  <!-- HERO -->
+  <section class="bg-gray-200 py-20 text-center">
+    <h2 class="text-5xl font-bold font-office text-dunder mb-4">Bem-vindo à Dunder Mifflin</h2>
+    <p class="text-lg text-gray-700 max-w-xl mx-auto mb-8">A API oficial da empresa de papel mais amada da TV. Explore os personagens inesquecíveis de Scranton!</p>
+    <a href="personagens.html" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-3 px-8 rounded-full transition shadow-lg">
+      Ver Personagens
+    </a>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="bg-white mt-16 py-6 text-center text-sm text-gray-500">
+    © 2025 Dunder Mifflin API | Feito com 💼 por Emily
+  </footer>
+
 </body>
 </html>
