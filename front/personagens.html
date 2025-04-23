@@ -68,6 +68,7 @@
         <input type="text" id="relationship_status" placeholder="Status de relacionamento" class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600" />
         <input type="text" id="office_hobbies" placeholder="Hobbies no escritório" class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600" />
         <textarea id="quote" placeholder="Frase icônica" class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600"></textarea>
+        <input type="text" id="image_url" placeholder="Link da Imagem" class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600" />
         <div class="flex justify-end gap-2">
           <button type="button" onclick="closeForm()" class="px-4 py-2 bg-gray-400 text-white rounded hover:opacity-90">Cancelar</button>
           <button type="submit" class="px-4 py-2 bg-brand text-black rounded hover:opacity-90">Salvar</button>
@@ -109,7 +110,7 @@
       }
       updateIcon();
       lucide.createIcons();
-      // carregarPersonagens(); // Aqui vai a função que chama a API
+      carregarPersonagens();
     });
 
     function openForm(edit = false, personagem = null) {
@@ -122,6 +123,7 @@
         form.age.value = personagem.age;
         form.relationship_status.value = personagem.relationship_status;
         form.office_hobbies.value = personagem.office_hobbies;
+        form.image_url = personagem.image_url;
         form.quote.value = personagem.quote;
       } else {
         formTitle.textContent = "Novo Personagem";
@@ -134,7 +136,88 @@
       modal.classList.add('hidden');
     }
 
-    // Aqui você pode completar depois com as funções de fetch para GET, POST, PUT, DELETE com sua API
+    const API_URL = "http://localhost:8000/api/v1/office-character";
+    const characterList = document.getElementById("characterList");
+    const searchInput = document.getElementById("searchInput");
+
+    // BUSCAR PERSONAGENS
+    async function carregarPersonagens(reload = false) {
+      characterList.innerHTML = "";
+      const res = await fetch(API_URL);
+      const personagens = await res.json();
+      console.log(personagens);
+
+      personagens.forEach(p => {
+        const card = document.createElement("div");
+        card.className = "bg-white dark:bg-gray-700 rounded shadow";
+        card.innerHTML = `
+          <div class="w-full flex justify-start items-center" dir="ltr">
+            <img src="${p.image_url}" class="h-40 rounded-s-lg"/>
+            <div class="flex flex-col p-4 w-full">
+              <h3 class="text-xl font-bold mb-1">${p.name}</h3>
+              <p class="text-sm text-gray-600 dark:text-gray-300 mb-1">${p.position} - ${p.age} anos</p>
+              <p class="text-sm italic mb-2">"${p.quote}"</p>
+              <div class="flex justify-end gap-2">
+                <button onclick='editCharacter(${JSON.stringify(p)})' class="text-sm text-blue-500 hover:underline">Editar</button>
+                <button onclick='deleteCharacter(${p.id})' class="text-sm text-red-500 hover:underline">Excluir</button>
+              </div>
+            </div>
+          </div>
+        `;
+        characterList.appendChild(card);
+      });
+      if (reload) location.reload()
+    }
+
+    // SALVAR PERSONAGEM (CRIAR OU EDITAR)
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const personagem = {
+        name: form.name.value,
+        position: form.position.value,
+        age: parseInt(form.age.value),
+        relationship_status: form.relationship_status.value,
+        office_hobbies: form.office_hobbies.value,
+        image_url: form.image_url.value,
+        quote: form.quote.value,
+      };
+
+      const id = characterId.value;
+
+      const response = await fetch(id ? `${API_URL}/${id}` : API_URL, {
+        method: id ? "PUT" : "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(personagem),
+      });
+
+      if (response.ok) {
+        closeForm();
+        carregarPersonagens();
+      }
+    });
+
+    // EDITAR PERSONAGEM
+    function editCharacter(personagem) {
+      openForm(true, personagem);
+    }
+
+    // DELETAR PERSONAGEM
+    async function deleteCharacter(id) {
+      if (confirm('Tem certeza de que deseja excluir este personagem?')) {
+        const res = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+        carregarPersonagens(true);
+      }
+    }
+
+    // FILTRO DE PESQUISA
+    searchInput.addEventListener('input', () => {
+      const searchValue = searchInput.value.toLowerCase();
+      [...characterList.children].forEach(card => {
+        const name = card.querySelector('h3').textContent.toLowerCase();
+        card.style.display = name.includes(searchValue) ? '' : 'none';
+      });
+    });
   </script>
 </body>
 </html>

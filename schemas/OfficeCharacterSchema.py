@@ -8,8 +8,11 @@ class OfficeCharacterSchema(BaseModel):
     age: int
     relationship_status: Optional[str] = None 
     office_hobbies: Optional[str] = None 
-    quote: Optional[str] = None  
+    quote: Optional[str] = None
+    image_url: str = None
 
     class Config:
         orm_mode = True
+
+
 

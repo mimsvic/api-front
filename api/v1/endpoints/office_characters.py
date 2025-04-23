@@ -17,7 +17,8 @@ async def post_office_character(character: all_schemas.OfficeCharacterSchema, db
         age=character.age,
         relationship_status=character.relationship_status,
         office_hobbies=character.office_hobbies,
-        quote=character.quote
+        quote=character.quote,
+        image_url=character.image_url
     )
     db.add(new_character)
     await db.commit()
@@ -64,7 +65,7 @@ async def put_office_character(id: int, character: all_schemas.OfficeCharacterSc
             return HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Character not found!")
 
 
-@router.delete("/{id}")
+@router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_office_character(id: int, db: AsyncSession = Depends(get_session)):
     async with db as session:
         query = select(OfficeModel).filter(OfficeModel.id == id)  # Usando o modelo correto
