@@ -1,67 +1,41 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Personagens | The Office API</title>
+  <title>Personagens | Dunder Mifflin Blog</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            dunder: '#1F2937',
-            paper: '#F5F5F5',
-          },
-          fontFamily: {
-            office: ['"Courier New"', 'monospace'],
-          }
-        }
-      }
-    }
-  </script>
 </head>
-<body class="bg-paper font-sans text-gray-800">
-
-  <!-- HEADER -->
-  <header class="bg-white shadow-md p-4 flex items-center justify-between">
-    <div class="flex items-center gap-4">
-      <img src="assets/img/logo.png" alt="Logo The Office" class="h-12 w-auto">
-      <h1 class="text-2xl font-bold text-dunder font-office">Dunder Mifflin API</h1>
+<body class="bg-gray-100 text-gray-900">
+  <div class="max-w-5xl mx-auto p-4">
+    <h1 class="text-3xl font-bold mb-6">Personagens</h1>
+    <div id="characters" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- Personagens serão inseridos aqui -->
     </div>
-    <nav class="space-x-6 text-lg">
-      <a href="index.html" class="text-gray-700 hover:text-yellow-600 transition">Início</a>
-      <a href="personagens.html" class="text-yellow-600 font-semibold">Personagens</a>
-    </nav>
-  </header>
+  </div>
 
-  <!-- TÍTULO -->
-  <section class="py-12 text-center">
-    <h2 class="text-4xl font-bold font-office text-dunder mb-2">Personagens</h2>
-    <p class="text-gray-600">Conheça os colaboradores (e caos) da Dunder Mifflin</p>
-  </section>
+  <script>
+    async function loadCharacters() {
+      const res = await fetch("http://localhost:8000/office-character/");
+      const data = await res.json();
 
-  <!-- LISTA DE PERSONAGENS -->
-  <main class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 px-6 pb-16 max-w-7xl mx-auto">
-    
-    <!-- EXEMPLO DE CARD (repete com dados da API) -->
-    <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition">
-      <img src="https://i.imgur.com/vtQGE6C.jpg" alt="Michael Scott" class="h-56 w-full object-cover">
-      <div class="p-4">
-        <h3 class="text-xl font-bold font-office text-dunder">Michael Scott</h3>
-        <p class="text-gray-600">Gerente Regional</p>
-        <a href="personagem.html?id=1" class="inline-block mt-4 text-yellow-600 hover:underline font-medium">Ver detalhes</a>
-      </div>
-    </div>
+      const container = document.getElementById("characters");
 
-    <!-- Copie e cole mais cards aqui, depois pode gerar dinamicamente com JS -->
+      data.forEach((char) => {
+        const card = document.createElement("a");
+        card.href = `personagem.html?id=${char.id}`;
+        card.className = "bg-white p-4 rounded-xl shadow hover:shadow-lg transition duration-200 block";
 
-  </main>
+        card.innerHTML = `
+          <h2 class="text-xl font-semibold">${char.name}</h2>
+          <p class="text-sm text-gray-600">${char.position}</p>
+        `;
 
-  <!-- FOOTER -->
-  <footer class="bg-white py-6 text-center text-sm text-gray-500">
-    © 2025 Dunder Mifflin API | Feito com 💼 por Emily
-  </footer>
+        container.appendChild(card);
+      });
+    }
 
+    loadCharacters();
+  </script>
 </body>
 </html>
