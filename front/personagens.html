@@ -1,41 +1,140 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br" class="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Personagens | Dunder Mifflin Blog</title>
+  <script src="https://unpkg.com/lucide@latest"></script>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: '#fca311',
+            dark: '#14213d',
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+    }
+  </style>
 </head>
-<body class="bg-gray-100 text-gray-900">
-  <div class="max-w-5xl mx-auto p-4">
-    <h1 class="text-3xl font-bold mb-6">Personagens</h1>
-    <div id="characters" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-      <!-- Personagens serão inseridos aqui -->
+<body class="bg-white text-black dark:bg-dark dark:text-white transition-colors duration-300">
+
+  <!-- Header -->
+  <header class="bg-dark text-brand dark:bg-brand dark:text-dark py-6 px-4 flex items-center justify-between shadow-md">
+    <h1 class="text-2xl font-bold">Dunder Mifflin Blog</h1>
+    <nav class="space-x-6">
+      <a href="index.html" class="hover:text-brand dark:hover:text-dark transition">Início</a>
+      <a href="personagens.html" class="hover:text-brand dark:hover:text-dark transition font-bold underline">Personagens</a>
+    </nav>
+    <button id="toggle-theme" class="ml-4 p-2 rounded-full bg-brand text-black dark:bg-dark dark:text-brand hover:opacity-90 transition">
+      <i id="theme-icon" data-lucide="file-text" class="w-6 h-6"></i>
+    </button>
+  </header>
+
+  <!-- Personagens Dashboard -->
+  <main class="p-6 max-w-6xl mx-auto">
+    <h2 class="text-3xl font-bold mb-6 text-center">Gerenciar Personagens</h2>
+
+    <!-- Barra de busca + botão adicionar -->
+    <div class="flex flex-col md:flex-row justify-between gap-4 mb-6">
+      <input id="searchInput" type="text" placeholder="Buscar personagem por nome..." class="flex-1 p-2 border rounded dark:bg-gray-800 dark:border-gray-600" />
+      <button class="bg-brand text-black px-4 py-2 rounded hover:opacity-90 transition" onclick="openForm()">+ Adicionar Personagem</button>
+    </div>
+
+    <!-- Lista de personagens -->
+    <div id="characterList" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- Cards vão ser inseridos via JavaScript -->
+    </div>
+  </main>
+
+  <!-- Modal de formulário -->
+  <div id="formModal" class="fixed inset-0 bg-black bg-opacity-50 hidden justify-center items-center z-50">
+    <div class="bg-white dark:bg-gray-800 p-6 rounded-md w-full max-w-md shadow-lg relative">
+      <h3 id="formTitle" class="text-xl font-bold mb-4">Novo Personagem</h3>
+      <form id="characterForm" class="space-y-4">
+        <input type="hidden" id="characterId" />
+        <input type="text" id="name" placeholder="Nome" required class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600" />
+        <input type="text" id="position" placeholder="Cargo" required class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600" />
+        <input type="number" id="age" placeholder="Idade" required class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600" />
+        <input type="text" id="relationship_status" placeholder="Status de relacionamento" class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600" />
+        <input type="text" id="office_hobbies" placeholder="Hobbies no escritório" class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600" />
+        <textarea id="quote" placeholder="Frase icônica" class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600"></textarea>
+        <div class="flex justify-end gap-2">
+          <button type="button" onclick="closeForm()" class="px-4 py-2 bg-gray-400 text-white rounded hover:opacity-90">Cancelar</button>
+          <button type="submit" class="px-4 py-2 bg-brand text-black rounded hover:opacity-90">Salvar</button>
+        </div>
+      </form>
     </div>
   </div>
 
+  <!-- Footer -->
+  <footer class="bg-white dark:bg-dark py-4 text-center text-sm text-gray-600 dark:text-gray-400">
+    &copy; 2025 Dunder Mifflin Inc. Todos os direitos reservados.
+  </footer>
+
   <script>
-    async function loadCharacters() {
-      const res = await fetch("http://localhost:8000/office-character/");
-      const data = await res.json();
+    const html = document.documentElement;
+    const icon = document.getElementById('theme-icon');
+    const modal = document.getElementById('formModal');
+    const form = document.getElementById('characterForm');
+    const formTitle = document.getElementById('formTitle');
+    const characterId = document.getElementById('characterId');
 
-      const container = document.getElementById("characters");
+    document.getElementById('toggle-theme').addEventListener('click', () => {
+      html.classList.toggle('dark');
+      localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
+      updateIcon();
+    });
 
-      data.forEach((char) => {
-        const card = document.createElement("a");
-        card.href = `personagem.html?id=${char.id}`;
-        card.className = "bg-white p-4 rounded-xl shadow hover:shadow-lg transition duration-200 block";
-
-        card.innerHTML = `
-          <h2 class="text-xl font-semibold">${char.name}</h2>
-          <p class="text-sm text-gray-600">${char.position}</p>
-        `;
-
-        container.appendChild(card);
-      });
+    function updateIcon() {
+      const isDark = html.classList.contains('dark');
+      icon.setAttribute('data-lucide', isDark ? 'file-text' : 'box');
+      lucide.createIcons({ force: true });
     }
 
-    loadCharacters();
+    window.addEventListener('DOMContentLoaded', () => {
+      if (localStorage.getItem('theme') === 'light') {
+        html.classList.remove('dark');
+      } else {
+        html.classList.add('dark');
+      }
+      updateIcon();
+      lucide.createIcons();
+      // carregarPersonagens(); // Aqui vai a função que chama a API
+    });
+
+    function openForm(edit = false, personagem = null) {
+      modal.classList.remove('hidden');
+      if (edit && personagem) {
+        formTitle.textContent = "Editar Personagem";
+        characterId.value = personagem.id;
+        form.name.value = personagem.name;
+        form.position.value = personagem.position;
+        form.age.value = personagem.age;
+        form.relationship_status.value = personagem.relationship_status;
+        form.office_hobbies.value = personagem.office_hobbies;
+        form.quote.value = personagem.quote;
+      } else {
+        formTitle.textContent = "Novo Personagem";
+        form.reset();
+        characterId.value = '';
+      }
+    }
+
+    function closeForm() {
+      modal.classList.add('hidden');
+    }
+
+    // Aqui você pode completar depois com as funções de fetch para GET, POST, PUT, DELETE com sua API
   </script>
 </body>
 </html>
