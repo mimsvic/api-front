@@ -11,4 +11,4 @@ class OfficeModel(settings.DBBaseModel):
     relationship_status: str = Column(String(64), nullable=True)
     office_hobbies: str = Column(String(256), nullable=True)
     quote: str = Column(String(256), nullable=True)
-    image_url: str = Column(String(512), nullable=False)
+

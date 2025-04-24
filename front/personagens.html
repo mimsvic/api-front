@@ -40,23 +40,23 @@
     </button>
   </header>
 
-  <!-- Personagens Dashboard -->
+  <!-- Conteúdo Principal -->
   <main class="p-6 max-w-6xl mx-auto">
     <h2 class="text-3xl font-bold mb-6 text-center">Gerenciar Personagens</h2>
 
-    <!-- Barra de busca + botão adicionar -->
+    <!-- Barra de busca + botão -->
     <div class="flex flex-col md:flex-row justify-between gap-4 mb-6">
       <input id="searchInput" type="text" placeholder="Buscar personagem por nome..." class="flex-1 p-2 border rounded dark:bg-gray-800 dark:border-gray-600" />
       <button class="bg-brand text-black px-4 py-2 rounded hover:opacity-90 transition" onclick="openForm()">+ Adicionar Personagem</button>
     </div>
 
-    <!-- Lista de personagens -->
+    <!-- Lista -->
     <div id="characterList" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-      <!-- Cards vão ser inseridos via JavaScript -->
+      <!-- Cards via JS -->
     </div>
   </main>
 
-  <!-- Modal de formulário -->
+  <!-- Modal Formulário -->
   <div id="formModal" class="fixed inset-0 bg-black bg-opacity-50 hidden justify-center items-center z-50">
     <div class="bg-white dark:bg-gray-800 p-6 rounded-md w-full max-w-md shadow-lg relative">
       <h3 id="formTitle" class="text-xl font-bold mb-4">Novo Personagem</h3>
@@ -68,7 +68,6 @@
         <input type="text" id="relationship_status" placeholder="Status de relacionamento" class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600" />
         <input type="text" id="office_hobbies" placeholder="Hobbies no escritório" class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600" />
         <textarea id="quote" placeholder="Frase icônica" class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600"></textarea>
-        <input type="text" id="image_url" placeholder="Link da Imagem" class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600" />
         <div class="flex justify-end gap-2">
           <button type="button" onclick="closeForm()" class="px-4 py-2 bg-gray-400 text-white rounded hover:opacity-90">Cancelar</button>
           <button type="submit" class="px-4 py-2 bg-brand text-black rounded hover:opacity-90">Salvar</button>
@@ -77,11 +76,12 @@
     </div>
   </div>
 
-  <!-- Footer -->
+  <!-- Rodapé -->
   <footer class="bg-white dark:bg-dark py-4 text-center text-sm text-gray-600 dark:text-gray-400">
     &copy; 2025 Dunder Mifflin Inc. Todos os direitos reservados.
   </footer>
 
+  <!-- Script -->
   <script>
     const html = document.documentElement;
     const icon = document.getElementById('theme-icon');
@@ -103,11 +103,8 @@
     }
 
     window.addEventListener('DOMContentLoaded', () => {
-      if (localStorage.getItem('theme') === 'light') {
-        html.classList.remove('dark');
-      } else {
-        html.classList.add('dark');
-      }
+      if (localStorage.getItem('theme') === 'light') html.classList.remove('dark');
+      else html.classList.add('dark');
       updateIcon();
       lucide.createIcons();
       carregarPersonagens();
@@ -123,7 +120,6 @@
         form.age.value = personagem.age;
         form.relationship_status.value = personagem.relationship_status;
         form.office_hobbies.value = personagem.office_hobbies;
-        form.image_url = personagem.image_url;
         form.quote.value = personagem.quote;
       } else {
         formTitle.textContent = "Novo Personagem";
@@ -136,40 +132,60 @@
       modal.classList.add('hidden');
     }
 
-    const API_URL = "http://localhost:8000/api/v1/office-character";
+    const API_URL = "http://127.0.0.1:8000/api/v1/office-character";
     const characterList = document.getElementById("characterList");
     const searchInput = document.getElementById("searchInput");
 
-    // BUSCAR PERSONAGENS
     async function carregarPersonagens(reload = false) {
       characterList.innerHTML = "";
       const res = await fetch(API_URL);
       const personagens = await res.json();
-      console.log(personagens);
 
       personagens.forEach(p => {
         const card = document.createElement("div");
-        card.className = "bg-white dark:bg-gray-700 rounded shadow";
+        card.className = "bg-white dark:bg-gray-800 rounded-lg shadow-md p-5 transition transform hover:scale-105 hover:shadow-xl hover:border-brand border border-gray-200 dark:border-gray-600";
+
         card.innerHTML = `
-          <div class="w-full flex justify-start items-center" dir="ltr">
-            <img src="${p.image_url}" class="h-40 rounded-s-lg"/>
-            <div class="flex flex-col p-4 w-full">
-              <h3 class="text-xl font-bold mb-1">${p.name}</h3>
-              <p class="text-sm text-gray-600 dark:text-gray-300 mb-1">${p.position} - ${p.age} anos</p>
-              <p class="text-sm italic mb-2">"${p.quote}"</p>
-              <div class="flex justify-end gap-2">
-                <button onclick='editCharacter(${JSON.stringify(p)})' class="text-sm text-blue-500 hover:underline">Editar</button>
-                <button onclick='deleteCharacter(${p.id})' class="text-sm text-red-500 hover:underline">Excluir</button>
-              </div>
+          <div class="flex flex-col gap-2">
+            <h3 class="text-2xl font-bold text-brand">${p.name}</h3>
+
+            <div class="flex items-center text-sm text-gray-600 dark:text-gray-300 gap-2">
+              <i data-lucide="briefcase" class="w-4 h-4"></i>
+              <span>${p.position}</span>
+            </div>
+
+            <div class="flex items-center text-sm text-gray-600 dark:text-gray-300 gap-2">
+              <i data-lucide="calendar" class="w-4 h-4"></i>
+              <span>${p.age} anos</span>
+            </div>
+
+            ${p.relationship_status ? `  
+              <div class="flex items-center text-sm text-gray-600 dark:text-gray-300 gap-2">
+                <i data-lucide="heart" class="w-4 h-4"></i>
+                <span>${p.relationship_status}</span>
+              </div>` : ''}
+
+            ${p.office_hobbies ? `  
+              <div class="flex items-center text-sm text-gray-600 dark:text-gray-300 gap-2">
+                <i data-lucide="coffee" class="w-4 h-4"></i>
+                <span>${p.office_hobbies}</span>
+              </div>` : ''}
+
+            <p class="italic text-gray-700 dark:text-gray-300 border-l-4 border-brand pl-3 mt-2">"${p.quote}"</p>
+
+            <div class="flex justify-end gap-3 mt-4">
+              <button onclick='editCharacter(${JSON.stringify(p)})' class="text-sm text-blue-500 hover:underline">Editar</button>
+              <button onclick='deleteCharacter(${p.id})' class="text-sm text-red-500 hover:underline">Excluir</button>
             </div>
           </div>
         `;
         characterList.appendChild(card);
       });
-      if (reload) location.reload()
+
+      lucide.createIcons();
+      if (reload) location.reload();
     }
 
-    // SALVAR PERSONAGEM (CRIAR OU EDITAR)
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
 
@@ -179,7 +195,6 @@
         age: parseInt(form.age.value),
         relationship_status: form.relationship_status.value,
         office_hobbies: form.office_hobbies.value,
-        image_url: form.image_url.value,
         quote: form.quote.value,
       };
 
@@ -197,20 +212,17 @@
       }
     });
 
-    // EDITAR PERSONAGEM
     function editCharacter(personagem) {
       openForm(true, personagem);
     }
 
-    // DELETAR PERSONAGEM
     async function deleteCharacter(id) {
       if (confirm('Tem certeza de que deseja excluir este personagem?')) {
-        const res = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+        await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
         carregarPersonagens(true);
       }
     }
 
-    // FILTRO DE PESQUISA
     searchInput.addEventListener('input', () => {
       const searchValue = searchInput.value.toLowerCase();
       [...characterList.children].forEach(card => {

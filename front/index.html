@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dunder Mifflin Blog</title>
+  <title>the office</title>
   <script src="https://unpkg.com/lucide@latest"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -14,6 +14,9 @@
           colors: {
             brand: '#fca311',
             dark: '#14213d',
+            light: '#ffffff',
+            text: '#333333',  /* Alterado para uma cor mais escura */
+            secondary: '#f1f5f9' /* Cor mais suave para o fundo */
           }
         }
       }
@@ -23,6 +26,14 @@
   <style>
     body {
       font-family: 'Poppins', sans-serif;
+    }
+
+    /* Adicionando um ajuste específico para o modo claro */
+    .bg-light {
+      background-color: #ffffff;  /* Cor clara para o fundo */
+    }
+    .text-dark {
+      color: #333333;  /* Cor mais escura para o texto */
     }
   </style>
 </head>
@@ -34,7 +45,7 @@
     <nav class="space-x-6">
       <a href="#" class="hover:text-brand dark:hover:text-dark transition">Início</a>
       <a href="personagens.html" class="hover:text-brand dark:hover:text-dark transition">Personagens</a>
-      <a href="#" class="hover:text-brand dark:hover:text-dark transition">Contato</a>
+      <a href="contato.html" class="hover:text-brand dark:hover:text-dark transition">Contato</a>
     </nav>
     <button id="toggle-theme" class="ml-4 p-2 rounded-full bg-brand text-black dark:bg-dark dark:text-brand hover:opacity-90 transition">
       <i id="theme-icon" data-lucide="file-text" class="w-6 h-6"></i>
@@ -59,7 +70,7 @@
   </section>
 
   <!-- Destaques -->
-  <section class="py-12 px-6 bg-white text-black dark:bg-dark dark:text-white">
+  <section class="py-12 px-6 bg-light text-dark dark:bg-dark dark:text-white">
     <div class="max-w-6xl mx-auto grid md:grid-cols-3 gap-8 text-center">
       <div>
         <div class="flex justify-center mb-4">

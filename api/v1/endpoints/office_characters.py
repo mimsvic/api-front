@@ -18,7 +18,6 @@ async def post_office_character(character: all_schemas.OfficeCharacterSchema, db
         relationship_status=character.relationship_status,
         office_hobbies=character.office_hobbies,
         quote=character.quote,
-        image_url=character.image_url
     )
     db.add(new_character)
     await db.commit()
